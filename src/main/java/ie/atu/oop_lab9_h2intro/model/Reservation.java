@@ -14,25 +14,24 @@ import java.time.LocalDate;
 @AllArgsConstructor
 
 public class Reservation {
-    private Long reservationId;
+    private int reservationId;
 
-    @NotBlank(message = "EquipmentTag is required")
+    @NotBlank(message = "equipmentTag is required")
     private String equipmentTag;
 
     @NotBlank(message = "studentEmail is required")
     @Email(message = "studentEmail must be a valid email address")
     private String studentEmail;
 
-    @NotNull(message = "ReservationDate is required")
+    @NotNull(message = "reservationDate is required")
     private LocalDate reservationDate;
 
-    @Min(value = 0, message = "Start hour must be between 0 & 23")
-    @Max(value = 23, message = "Start hour must be between 0 & 23")
+    @Min(value = 0, message = "startHour must be between 0 & 23")
+    @Max(value = 23, message = "startHour must be between 0 & 23")
     private int startHour;
 
-    public void setReservationId(long l) {
-    }
+    @Min(value = 1, message = "durationHours must be between 1 & 24")
+    @Max(value = 24, message = "durationHours must be between 1 & 24")
+    private int durationHours;
 
-    public int getDurationHours() {
-    }
 }

@@ -1,17 +1,18 @@
 package ie.atu.oop_lab9_h2intro.controller;
 
+
+import ie.atu.oop_lab9_h2intro.model.Reservation;
+import ie.atu.oop_lab9_h2intro.service.ReservationService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/reservations")
-public class ReservationService {
+public class ReservationController {
 
     private final ReservationService reservationService; // tells springboot that it is responsible for class creation
 
@@ -19,15 +20,22 @@ public class ReservationService {
         this.reservationService = reservationService;
     }
 
-    // create
+    // Create
     @PostMapping
     public ResponseEntity<Reservation> create(@Valid @RequestBody Reservation reservation) {
         Reservation saved = reservationService.addReservation(reservation);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
+    //GetAll
     @GetMapping
     public ResponseEntity<List<Reservation>> getAll() {
-        return ResponseEntity.ok(reservationService.getReservationById(id)));
+        return ResponseEntity.ok(reservationService.getAllReservations());
+    }
+
+    //Get one
+    @GetMapping("{id}")
+    public ResponseEntity<Reservation> getById(int id) {
+        return ResponseEntity.ok(reservationService.getReservationById(id));
     }
 }
