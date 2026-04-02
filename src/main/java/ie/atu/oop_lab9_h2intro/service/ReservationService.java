@@ -4,6 +4,7 @@ package ie.atu.oop_lab9_h2intro.service;
 import ie.atu.oop_lab9_h2intro.exception.ReservationConflictException;
 import ie.atu.oop_lab9_h2intro.exception.ReservationNotFoundException;
 import ie.atu.oop_lab9_h2intro.model.Reservation;
+import ie.atu.oop_lab9_h2intro.respository.ReservationRepo;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
@@ -17,16 +18,18 @@ import java.util.Objects;
 @Service
 public class ReservationService {
 
-    private List<Reservation> reservations = new ArrayList<>();
-    private int nextId = 1;
+    private List<Reservation> reservations;
+    private final ReservationRepo reservationRepository;
 
-    public ReservationService(FrameworkServlet frameworkServlet) {
+    public ReservationService(ReservationRepo reservationRepository) {
+        this.reservationRepository = reservationRepository;
     }
+
 
     //Create
     public Reservation addReservation(Reservation reservation) {
-        //Assign ID
-        reservation.setReservationId(nextId++);
+
+        reservations = reservationRepository.findAll();
 
         //Check for Time Conflicts
         for (Reservation existing : reservations) {
@@ -44,27 +47,20 @@ public class ReservationService {
             //Overlap Check
             if (existingStart < newEnd && newStart < existingEnd) {
                 //Remove ID
-                reservation.setStartHour(nextId--);
                 throw new ReservationConflictException("Time slot already booked");
             }
         }
-        reservations.add(reservation);
+        reservationRepository.save(reservation);
         return reservation;
     }
 
-    public List<Reservation> getAllReservations()
-    {
-        return reservations;
+    //GET ALL
+    public List<Reservation> getAllReservations() {
+        return reservationRepository.findAll();
     }
 
     //GET BY ID
-    public Reservation getReservationById(int id){
-        for (Reservation reservation : reservations) {
-            if(Objects.equals(reservation.getReservationId(), id)){ //this line is different from tutorial (long to int issue)
-                return reservation;
-            }
+    public Reservation getReservationById(int id) {
+            return reservationRepository.findById(id).orElseThrow(() -> new ReservationNotFoundException("Reservation not found"));
         }
-
-        throw new ReservationNotFoundException("Reservation not found");
-    }
 }
