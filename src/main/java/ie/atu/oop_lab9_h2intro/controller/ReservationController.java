@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -37,5 +38,11 @@ public class ReservationController {
     @GetMapping("{id}")
     public ResponseEntity<Reservation> getById(int id) {
         return ResponseEntity.ok(reservationService.getReservationById(id));
+    }
+    //Get one by date
+
+    @GetMapping ("/date/{date}")
+    public ResponseEntity<List<Reservation>> getByDate(@PathVariable LocalDate date) {
+        return ResponseEntity.ok(reservationService.getByDate(date));
     }
 }
